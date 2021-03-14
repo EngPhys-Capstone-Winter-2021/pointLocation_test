@@ -1,0 +1,53 @@
+# CompilerName=mingw64
+# Mode=optim
+ninja_required_version = 1.3
+
+# Basic folders
+root = .
+builddir = $root/build/win64
+matlabdir = C:/Program Files/MATLAB/R2020b
+startdir = C:/Users/Ryan Fang/Dropbox/School/University/ECE 494_495 - Engineering Physics Design Project I_II/Project - External/Matlab Testing/pointLocation_test
+
+# Toolchain information
+cc = C:\ProgramData\MATLAB\SupportPackages\R2020b\3P.instrset\mingw_w64.instrset\bin\gcc
+cxx = C:\ProgramData\MATLAB\SupportPackages\R2020b\3P.instrset\mingw_w64.instrset\bin\g++
+linker = C:\ProgramData\MATLAB\SupportPackages\R2020b\3P.instrset\mingw_w64.instrset\bin\gcc
+linkerxx = C:\ProgramData\MATLAB\SupportPackages\R2020b\3P.instrset\mingw_w64.instrset\bin\g++
+
+cflags =  -c -fexceptions -fno-omit-frame-pointer -m64 -DMATLAB_MEX_FILE  -DMATLAB_MEX_FILE -O2 -fwrapv -DNDEBUG -std=c99 -I "C:\Users\Ryan Fang\Dropbox\School\University\ECE 494_495 - Engineering Physics Design Project I_II\Project - External\Matlab Testing\pointLocation_test\codegen\mex\pointLocation3" -I "C:\Users\Ryan Fang\Dropbox\School\University\ECE 494_495 - Engineering Physics Design Project I_II\Project - External\Matlab Testing\pointLocation_test" -I "C:\Users\Ryan Fang\Dropbox\School\University\ECE 494_495 - Engineering Physics Design Project I_II\Project - External\Matlab Testing\pointLocation_test\codegen\mex\pointLocation3\interface" -I "C:\Program Files\MATLAB\R2020b\extern\include" -I "." -DMODEL=pointLocation3_mex -D__USE_MINGW_ANSI_STDIO=1  
+
+cxxflags =  -c -fexceptions -fno-omit-frame-pointer -std=c++11 -m64 -DMATLAB_MEX_FILE  -DMATLAB_MEX_FILE -O2 -fwrapv -DNDEBUG -std=c++11 -I "C:\Users\Ryan Fang\Dropbox\School\University\ECE 494_495 - Engineering Physics Design Project I_II\Project - External\Matlab Testing\pointLocation_test\codegen\mex\pointLocation3" -I "C:\Users\Ryan Fang\Dropbox\School\University\ECE 494_495 - Engineering Physics Design Project I_II\Project - External\Matlab Testing\pointLocation_test" -I "C:\Users\Ryan Fang\Dropbox\School\University\ECE 494_495 - Engineering Physics Design Project I_II\Project - External\Matlab Testing\pointLocation_test\codegen\mex\pointLocation3\interface" -I "C:\Program Files\MATLAB\R2020b\extern\include" -I "." -DMODEL=pointLocation3_mex -D__USE_MINGW_ANSI_STDIO=1  
+
+ldflags =  -m64 -Wl,--no-undefined -shared -static -L"C:\Program Files\MATLAB\R2020b\extern\lib\win64\mingw64" -llibmx -llibmex -llibmat -lm -llibmwlapack -llibmwblas -o "pointLocation3_mex.mexw64" -llibemlrt -llibcovrt -llibut -llibmwmathutil  -Wl,--version-script,pointLocation3_mex.map
+
+# Build Rules
+rule cc
+    command = $cc $cflags $in -o $out
+
+rule cxx
+    command = $cxx $cxxflags $in -o $out
+
+rule link
+    command = $linker @$out.rsp $ldflags
+    rspfile = $out.rsp
+    rspfile_content = $in
+
+rule linkxx
+    command = $linkerxx $in $ldflags
+
+# Build
+build $builddir/pointLocation3_data.o : cc $root/pointLocation3_data.c
+build $builddir/rt_nonfinite.o : cc $root/rt_nonfinite.c
+build $builddir/pointLocation3_initialize.o : cc $root/pointLocation3_initialize.c
+build $builddir/pointLocation3_terminate.o : cc $root/pointLocation3_terminate.c
+build $builddir/pointLocation3.o : cc $root/pointLocation3.c
+build $builddir/eml_int_forloop_overflow_check.o : cc $root/eml_int_forloop_overflow_check.c
+build $builddir/det.o : cc $root/det.c
+build $builddir/_coder_pointLocation3_api.o : cc $root/interface/_coder_pointLocation3_api.c
+build $builddir/_coder_pointLocation3_mex.o : cc $root/interface/_coder_pointLocation3_mex.c
+build $builddir/pointLocation3_emxutil.o : cc $root/pointLocation3_emxutil.c
+build $builddir/_coder_pointLocation3_info.o : cc $root/interface/_coder_pointLocation3_info.c
+build $builddir/c_mexapi_version.o : cc $matlabdir/extern/version/c_mexapi_version.c
+
+# Link
+build $root\pointLocation3_mex.mexw64 : link $builddir/pointLocation3_data.o $builddir/rt_nonfinite.o $builddir/pointLocation3_initialize.o $builddir/pointLocation3_terminate.o $builddir/pointLocation3.o $builddir/eml_int_forloop_overflow_check.o $builddir/det.o $builddir/_coder_pointLocation3_api.o $builddir/_coder_pointLocation3_mex.o $builddir/pointLocation3_emxutil.o $builddir/_coder_pointLocation3_info.o $builddir/c_mexapi_version.o 
